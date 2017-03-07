@@ -52,29 +52,6 @@ exports.logInCheck = function(object, callback) {
   });
 };
 
-exports.checkSessionHash = function(object, callback) {
-  var queryString = 'select hash from sessions where id = (select id from users where username = ?)';
-  db.query(queryString, object.username, function(err, results) {
-    if (err) {
-      console.log('error', err);
-    } else {
-      callback(results);
-    }
-  });
-};
-
-// exports.checkSessionHash = function(object, callback) {
-//   var queryString = 'select hash from sessions where id = (select id from users where username = ?)';
-//   db.query(queryString, object.username, function(err, results) {
-//     if (err) {
-//       console.log('error', err);
-//     } else {
-//       callback(results);
-//     }
-//   });
-// };
-
-
 
 
 
