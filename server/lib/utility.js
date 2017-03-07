@@ -1,6 +1,7 @@
 var Promise = require('bluebird');
 var request = Promise.promisify(require('request'), { multiArgs: true });
 var crypto = require('crypto');
+var db = require('../db');
 
 exports.getUrlTitle = function(url) {
   return request(url).then(function(response, html) {
@@ -23,21 +24,34 @@ exports.isValidUrl = function(url) {
 //hash.update --> Updates hash content when given data
 //hash.digest --> Digest locks down the hash so that it is not used again. Uniquify
 
-// var exampleObj = {
-//   'username': 'Samantha',
-//   'password': 'Samantha'
-// };
-var hashFunction = function(object) {
-  console.log('....Before hash', object);
-  var hash = crypto.createHash('sha1');
-  object.password = hash.digest('hex');
-  console.log('///////hashFunction', object.password);
+exports.hashFunction = function(object, callback) {
+  var hash = crypto.createHash('sha1').update(object.password);
+  object.password = hash.digest('hex'); 
+  callback(object);
+};
+
+exports.checkUserExist = function(object, callback) {
+  var queryString = 'Select id from users where username = ?';
+  db.query(queryString, object.username, function(err, results) {
+    if (err) {
+      console.log('Error received within utility/checkuserexist', err);
+    } else {
+      callback(results);
+    }
+  });
+};
+
+exports.logInCheck = function(object, callback) {
+  var queryString = 'select password from users where username = ?';
+  db.query(queryString, object.username, function(err, results) {
+    if (err) {
+      console.log('error', err);
+    } else {
+      callback(results);
+    }
+  });
 };
 
 
 
-// var shasum = crypto.createHash('sha1');
-//   shasum.update(link.url);
-//   link.code = shasum.digest('hex').slice(0, 5);
 
-//   return db.queryAsync(queryString, link);

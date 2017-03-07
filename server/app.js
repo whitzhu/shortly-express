@@ -33,16 +33,45 @@ function(req, res) {
 
 app.post('/signup', 
 function(req, res) {
-  //call model 
-  // console.log('///Within app.post, req.body is:', req.body);
-  hashFunction(req.body);
-  Users.insertUsers(req.body);
-  res.send(res);
+  util.checkUserExist(req.body, function(results) {
+    if (results.length > 0) {
+      res.redirect('/login');
+    } else {
+      util.hashFunction(req.body, function(results) {
+        Users.insertUsers(results);
+        res.redirect('/');
+      });
+    }
+  }); 
 });
 
 app.get('/login', 
 function(req, res) {
   res.render('login');
+});
+
+app.post('/login', 
+function(req, res) {
+  util.hashFunction(req.body, function(hash) {
+    util.checkUserExist(req.body, function(userResult) {
+      util.logInCheck(req.body, function(results) {
+        console.log('....//// Within post login results is:', results);
+        if (results.length > 0 && userResult.length > 0) {
+          console.log('....First if values are.. userResult/req.body:', hash.password, 'hashpassword<results[0].password', results[0].password, '...', userResult[0].id, 'req.body.password:', req.body.password);
+          if (hash.password === results[0].password && userResult[0].id > 0) {
+            console.log('*********WITHIN***************');
+            res.redirect('/');
+            res.end();
+          } else {
+            res.redirect('/login');
+          }
+        } else {
+          console.log('wrong login');
+          res.redirect('/login');
+        }
+      });
+    });
+  });
 });
 
 app.get('/create', 
