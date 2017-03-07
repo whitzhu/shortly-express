@@ -23,6 +23,29 @@ module.exports = function(db) {
       timestamp TIMESTAMP\
       );');
   })
+  .then(function() {
+    // Create users table
+    return db.queryAsync('CREATE TABLE IF NOT EXISTS users (\
+      id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\
+      username VARCHAR(20) UNIQUE,\
+      password VARCHAR(20) NOT NULL,\
+      timestamp TIMESTAMP\
+      );');
+  })
+  .then(function() {
+  // Create sessions table
+    return db.queryAsync('CREATE TABLE IF NOT EXISTS sessions (\
+      id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\
+      hash VARCHAR(40),\
+      user_id INT,\
+      timestamp TIMESTAMP\
+      );');
+  })  
+  .then(function() {
+  // Create sessions table
+    return db.queryAsync('FOREIGN KEY sessions (user_id) REFERENCES users(id);');
+  })
+
   /************************************************************/
   /*          Add additional schema queries here              */
   /************************************************************/

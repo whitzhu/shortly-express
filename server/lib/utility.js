@@ -20,4 +20,24 @@ exports.isValidUrl = function(url) {
 /************************************************************/
 // Add additional utility functions below
 /************************************************************/
+//hash.update --> Updates hash content when given data
+//hash.digest --> Digest locks down the hash so that it is not used again. Uniquify
 
+// var exampleObj = {
+//   'username': 'Samantha',
+//   'password': 'Samantha'
+// };
+var hashFunction = function(object) {
+  console.log('....Before hash', object);
+  var hash = crypto.createHash('sha1');
+  object.password = hash.digest('hex');
+  console.log('///////hashFunction', object.password);
+};
+
+
+
+// var shasum = crypto.createHash('sha1');
+//   shasum.update(link.url);
+//   link.code = shasum.digest('hex').slice(0, 5);
+
+//   return db.queryAsync(queryString, link);

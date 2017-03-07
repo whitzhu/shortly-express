@@ -26,6 +26,25 @@ function(req, res) {
   res.render('index');
 });
 
+app.get('/signup', 
+function(req, res) {
+  res.render('signup');
+});
+
+app.post('/signup', 
+function(req, res) {
+  //call model 
+  // console.log('///Within app.post, req.body is:', req.body);
+  hashFunction(req.body);
+  Users.insertUsers(req.body);
+  res.send(res);
+});
+
+app.get('/login', 
+function(req, res) {
+  res.render('login');
+});
+
 app.get('/create', 
 function(req, res) {
   res.render('index');

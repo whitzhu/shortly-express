@@ -47,7 +47,7 @@ describe('', function() {
     /**************************************************************************************/
     /* TODO: If you create a new MySQL tables, add it to the tablenames collection below. */
     /**************************************************************************************/
-    var tablenames = ['links', 'clicks'
+    var tablenames = ['links', 'clicks', 'users', 'sessions'
 ];
 
     db.connect(function(err) {
@@ -111,6 +111,7 @@ describe('', function() {
         password: 'p@ssw0rd'
       };
       db.query('INSERT INTO users SET ?', newUser, function(error, result) {
+        // console.log('////Within Mocha Test, should increment, result returns:', result);
         var newUserId = result.insertId;
         var otherUser = {
           username: 'Muhammed',
@@ -125,9 +126,9 @@ describe('', function() {
     });
   });
 
-  xdescribe('Account Creation:', function() {
+  describe('Account Creation:', function() {
 
-    it('signup creates a new user record', function(done) {
+    xit('signup creates a new user record', function(done) {
       var options = {
         'method': 'POST',
         'uri': 'http://127.0.0.1:4568/signup',
@@ -141,6 +142,7 @@ describe('', function() {
         var queryString = 'SELECT * FROM users where username = "Samantha"';
         db.query(queryString, function(err, rows) {
           if (err) { done(err); }
+          //console.log('///Within request rows is:', rows);
           var user = rows[0];
           expect(user).to.exist;
           expect(user.username).to.equal('Samantha');
