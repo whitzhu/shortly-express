@@ -61,7 +61,6 @@ function(req, res) {
           if (hash.password === results[0].password && userResult[0].id > 0) {
             console.log('*********WITHIN***************');
             res.redirect('/');
-            res.end();
           } else {
             res.redirect('/login');
           }
