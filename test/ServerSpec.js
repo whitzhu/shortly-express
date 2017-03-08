@@ -382,7 +382,6 @@ describe('', function() {
         var response = httpMocks.createResponse();
 
         sessionParser(requestWithoutCookies, response, function() {
-          // console.log('======first session=======');
           var session = requestWithoutCookies.session;
           expect(session).to.be.an('object');
           expect(session.hash).to.exist;
@@ -390,7 +389,7 @@ describe('', function() {
         });
       });
 
-      xit('sets a new cookie on the response when a session is initialized', function() {
+      it('sets a new cookie on the response when a session is initialized', function() {
         var requestWithoutCookie = httpMocks.createRequest();
         var response = httpMocks.createResponse();
 
@@ -401,7 +400,7 @@ describe('', function() {
         });
       });
 
-      xit('assigns a session object to the request if a session already exists', function(done) {
+      it('assigns a session object to the request if a session already exists', function(done) {
 
         var requestWithoutCookie = httpMocks.createRequest();
         var response = httpMocks.createResponse();

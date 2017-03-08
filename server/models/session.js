@@ -5,7 +5,7 @@ var util = require('../lib/utility');
 
 module.exports = {
   insertSessions: function(param) {
-    db.query('insert into session set ?', param, function (error, success) {
+    db.query('insert into sessions set ?', param, function (error, success) {
       if (error) {
         console.log('error', error);
       } else {

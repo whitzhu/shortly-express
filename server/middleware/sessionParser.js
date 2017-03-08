@@ -4,54 +4,29 @@ var _ = require('underscore');
 
 var createSession = function(req, res, next) {
   var session = {};
+  res.cookies.shortlyid = res.cookies.shortlyid || {};
   if (!req.headers.session) {
     req.session = {hash: undefined};
   }
-  // console.log('*****REQ:', req);
-  console.log('*****REQ:', req.headers.cookie);
-  if (!_.isEmpty(req.headers.cookie)) {
+  if (res.cookies.shortlyid.value) {
+    console.log('...response.cookies.shortlyid.value', res.cookies.shortlyid.value);
     req.session = {};
-    req.session.hash = 'abcd123plspass';
-    console.log('....within req.headers.cookies', req);
+    req.session.hash = res.cookies.shortlyid.value;
   } else {
-    var salt = { password: new Date().toString() };
-    util.hashFunction(salt, function(hash) {
+    var salt = util.createSalt();
+    var tempPassword = { password: salt };
+    util.hashFunction(tempPassword, function(hash) {
       Sessions.insertSessions({
-        hash: hash.password
+        hash: hash.password,
+        salt: salt
       });
       req[session] = {};
       req.session.hash = hash.password;
-      res.set({
-        'Set-Cookie': 'shortlyid=' + hash
-      });
-      
-      // console.log('Within sessionParser/createSession headers.cookies:', res.headers['cookies']);
-      res.send();
+      res.cookie('shortlyid', hash.password);
+      next();
     });
   }
 };
-// var createSession = function(req, res, next) {
-//   var sessionInitialization = function(req, res) {
-//     req.session = {};
-//     req.session.hash = 'fill';
-//     var salt = { password: new Date().toString() };
-//     util.hashFunction(salt, function(hash) {
-//       //results -->[row {password: 8923742u3ajsldkf}]
-//       Sessions.insertSessions({
-//         hash: hash.password
-//       });
-//     res.set({
-
-//     })
-//     res.cookies;
-//   };
-//   if (_.isEmpty(req.headers.cookie)) {
-//     sessionInitialization(req, res);
-//   }
-// };
 
 module.exports = createSession;
 
-
-// util.checkUserExist(req.body, function(userid) {
-//userid -->[row {userid: 2}]

@@ -30,6 +30,10 @@ exports.hashFunction = function(object, callback) {
   callback(object);
 };
 
+exports.createSalt = function() {
+  return crypto.randomBytes(20).toString('hex');
+};
+
 exports.checkUserExist = function(object, callback) {
   var queryString = 'Select id from users where username = ?';
   db.query(queryString, object.username, function(err, results) {
@@ -48,6 +52,24 @@ exports.logInCheck = function(object, callback) {
       console.log('error', err);
     } else {
       callback(results);
+    }
+  });
+};
+
+exports.assignSessionUser = function(username, hash) {
+  var queryString = 'select id from users where username = ?';
+  db.query(queryString, username, function(err, userid) {
+    if (err) {
+      console.log('error', err);
+    } else {
+      var queryString = 'UPDATE sessions SET user_id = ? WHERE hash = ?';
+      db.query(queryString, [userid, hash], function(err, success) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Successfully updated session');
+        }
+      });
     }
   });
 };

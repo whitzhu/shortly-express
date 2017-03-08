@@ -10,6 +10,7 @@ var parseCookies = function(req, res, next) {
   } else {
     req.headers.cookie = cookieObj;
   }
+  // next();
 };
 
 module.exports = parseCookies;

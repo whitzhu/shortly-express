@@ -28,7 +28,7 @@ module.exports = function(db) {
     return db.queryAsync('CREATE TABLE IF NOT EXISTS users (\
       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\
       username VARCHAR(20) UNIQUE,\
-      password VARCHAR(40) NOT NULL,\
+      password VARCHAR(40),\
       timestamp TIMESTAMP\
       );');
   })
@@ -37,6 +37,7 @@ module.exports = function(db) {
     return db.queryAsync('CREATE TABLE IF NOT EXISTS sessions (\
       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\
       hash VARCHAR(40),\
+      salt VARCHAR(40),\
       user_id INT,\
       timestamp TIMESTAMP\
       );');

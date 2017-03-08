@@ -9,6 +9,9 @@ var Links = require('./models/link');
 var Sessions = require('./models/session');
 var Click = require('./models/click');
 
+var cookieParser = require('./middleware/cookieParser');
+var sessionParser = require('./middleware/sessionParser');
+
 var app = express();
 
 app.set('views', __dirname + '/views');
@@ -20,6 +23,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files from ../public directory
 app.use(express.static(path.join(__dirname, '../public')));
+
+app.use(cookieParser);
+app.use(sessionParser);
 
 app.get('/', 
 function(req, res) {
@@ -35,10 +41,11 @@ app.post('/signup',
 function(req, res) {
   util.checkUserExist(req.body, function(results) {
     if (results.length > 0) {
-      res.redirect('/login');
+      res.redirect('/signup');
     } else {
       util.hashFunction(req.body, function(results) {
         Users.insertUsers(results);
+        util.assignSessionUser(req.body.username, req.session.hash);
         res.redirect('/');
       });
     }
@@ -55,17 +62,14 @@ function(req, res) {
   util.hashFunction(req.body, function(hash) {
     util.checkUserExist(req.body, function(userResult) {
       util.logInCheck(req.body, function(results) {
-        console.log('....//// Within post login results is:', results);
         if (results.length > 0 && userResult.length > 0) {
-          console.log('....First if values are.. userResult/req.body:', hash.password, 'hashpassword<results[0].password', results[0].password, '...', userResult[0].id, 'req.body.password:', req.body.password);
           if (hash.password === results[0].password && userResult[0].id > 0) {
-            console.log('*********WITHIN***************');
+            util.assignSessionUser(req.body.username, req.session.hash);
             res.redirect('/');
           } else {
             res.redirect('/login');
           }
         } else {
-          console.log('wrong login');
           res.redirect('/login');
         }
       });
